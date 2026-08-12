@@ -4,7 +4,7 @@ A secure multi-department company network designed and implemented using **Cisco
 
 The project demonstrates practical networking concepts including VLAN segmentation, 802.1Q trunking, Router-on-a-Stick, inter-VLAN routing, DHCP, DNS, ACL-based network security, NAT/PAT, WAN connectivity, and simulated Internet access.
 
-![Network Topology](Screenshots/01-topology.png)
+![Network Topology](Screenshots/01-Network-Topology.png)
 
 ---
 
