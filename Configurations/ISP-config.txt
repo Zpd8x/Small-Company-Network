@@ -1,0 +1,26 @@
+hostname ISP
+
+!
+! ============================================================
+! CONNECTION TO COMPANY ROUTER
+! ============================================================
+interface GigabitEthernet0/0
+description LINK_TO_R1
+ip address 203.0.113.2 255.255.255.252
+no shutdown
+exit
+
+!
+! ============================================================
+! SIMULATED INTERNET NETWORK
+! ============================================================
+interface GigabitEthernet0/1
+description LINK_TO_INTERNET_SERVER
+ip address 198.51.100.1 255.255.255.0
+no shutdown
+exit
+
+!
+! ============================================================
+! END
+! ============================================================

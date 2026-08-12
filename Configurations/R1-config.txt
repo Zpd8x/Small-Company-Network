@@ -1,0 +1,168 @@
+hostname R1
+
+!
+! ============================================================
+! WAN INTERFACE
+! ============================================================
+interface GigabitEthernet0/1
+description WAN_TO_ISP
+ip address 203.0.113.1 255.255.255.252
+ip nat outside
+no shutdown
+exit
+
+!
+! ============================================================
+! INTERNAL TRUNK
+! ============================================================
+interface GigabitEthernet0/0
+description TRUNK_TO_SW1
+no ip address
+no shutdown
+exit
+
+!
+! ============================================================
+! VLAN 10 - ADMIN
+! ============================================================
+interface GigabitEthernet0/0.10
+description GATEWAY_ADMIN
+encapsulation dot1Q 10
+ip address 192.168.10.1 255.255.255.0
+ip nat inside
+exit
+
+!
+! ============================================================
+! VLAN 20 - STAFF
+! ============================================================
+interface GigabitEthernet0/0.20
+description GATEWAY_STAFF
+encapsulation dot1Q 20
+ip address 192.168.20.1 255.255.255.0
+ip access-group STAFF_IN in
+ip nat inside
+no ip unreachables
+exit
+
+!
+! ============================================================
+! VLAN 30 - GUEST
+! ============================================================
+interface GigabitEthernet0/0.30
+description GATEWAY_GUEST
+encapsulation dot1Q 30
+ip address 192.168.30.1 255.255.255.0
+ip access-group GUEST_IN in
+ip nat inside
+no ip unreachables
+exit
+
+!
+! ============================================================
+! VLAN 40 - SERVER
+! ============================================================
+interface GigabitEthernet0/0.40
+description GATEWAY_SERVER
+encapsulation dot1Q 40
+ip address 192.168.40.1 255.255.255.0
+ip nat inside
+exit
+
+!
+! ============================================================
+! DHCP EXCLUDED ADDRESSES
+! ============================================================
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp excluded-address 192.168.20.1 192.168.20.20
+ip dhcp excluded-address 192.168.30.1 192.168.30.20
+
+!
+! ============================================================
+! DHCP - ADMIN
+! ============================================================
+ip dhcp pool ADMIN_POOL
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+dns-server 192.168.40.10
+exit
+
+!
+! ============================================================
+! DHCP - STAFF
+! ============================================================
+ip dhcp pool STAFF_POOL
+network 192.168.20.0 255.255.255.0
+default-router 192.168.20.1
+dns-server 192.168.40.10
+exit
+
+!
+! ============================================================
+! DHCP - GUEST
+! ============================================================
+ip dhcp pool GUEST_POOL
+network 192.168.30.0 255.255.255.0
+default-router 192.168.30.1
+dns-server 192.168.40.10
+exit
+
+!
+! ============================================================
+! STAFF SECURITY ACL
+! ============================================================
+ip access-list extended STAFF_IN
+
+permit udp any eq bootpc any eq bootps
+
+permit icmp 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255 echo-reply
+
+permit ip 192.168.20.0 0.0.0.255 192.168.40.0 0.0.0.255
+
+deny ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255
+deny ip 192.168.20.0 0.0.0.255 192.168.30.0 0.0.0.255
+
+permit ip 192.168.20.0 0.0.0.255 any
+exit
+
+!
+! ============================================================
+! GUEST SECURITY ACL
+! ============================================================
+ip access-list extended GUEST_IN
+
+permit udp any eq bootpc any eq bootps
+
+permit udp 192.168.30.0 0.0.0.255 host 192.168.40.10 eq domain
+permit tcp 192.168.30.0 0.0.0.255 host 192.168.40.10 eq domain
+
+permit icmp 192.168.30.0 0.0.0.255 192.168.10.0 0.0.0.255 echo-reply
+
+deny ip 192.168.30.0 0.0.0.255 192.168.10.0 0.0.0.255
+deny ip 192.168.30.0 0.0.0.255 192.168.20.0 0.0.0.255
+deny ip 192.168.30.0 0.0.0.255 192.168.40.0 0.0.0.255
+
+permit ip 192.168.30.0 0.0.0.255 any
+exit
+
+!
+! ============================================================
+! NAT / PAT NETWORKS
+! ============================================================
+access-list 1 permit 192.168.10.0 0.0.0.255
+access-list 1 permit 192.168.20.0 0.0.0.255
+access-list 1 permit 192.168.30.0 0.0.0.255
+access-list 1 permit 192.168.40.0 0.0.0.255
+
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+
+!
+! ============================================================
+! DEFAULT ROUTE TO ISP
+! ============================================================
+ip route 0.0.0.0 0.0.0.0 203.0.113.2
+
+!
+! ============================================================
+! END
+! ============================================================

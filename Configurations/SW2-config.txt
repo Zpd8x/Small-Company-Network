@@ -1,0 +1,60 @@
+hostname SW2
+
+!
+! ============================================================
+! VLAN DATABASE
+! ============================================================
+vlan 20
+name STAFF
+exit
+
+vlan 30
+name GUEST
+exit
+
+!
+! ============================================================
+! VLAN 20 - STAFF
+! ============================================================
+interface FastEthernet0/1
+description STAFF-PC3
+switchport mode access
+switchport access vlan 20
+exit
+
+interface FastEthernet0/2
+description STAFF-PC4
+switchport mode access
+switchport access vlan 20
+exit
+
+!
+! ============================================================
+! VLAN 30 - GUEST
+! ============================================================
+interface FastEthernet0/3
+description GUEST-PC1
+switchport mode access
+switchport access vlan 30
+exit
+
+interface FastEthernet0/4
+description GUEST-PC2
+switchport mode access
+switchport access vlan 30
+exit
+
+!
+! ============================================================
+! TRUNK TO SW1
+! ============================================================
+interface FastEthernet0/24
+description TRUNK_TO_SW1
+switchport mode trunk
+switchport trunk allowed vlan 20,30
+exit
+
+!
+! ============================================================
+! END
+! ============================================================

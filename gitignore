@@ -1,0 +1,28 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+*.log
+
+# Editor / IDE files
+.vscode/
+.idea/
+
+# Packet Tracer temporary / backup files
+*.pkt.bak
+
+# Archives
+*.zip
+*.rar
+*.7z
+
+# Local working folders
+temp/
+tmp/
+backup/

@@ -1,0 +1,88 @@
+hostname SW1
+
+!
+! ============================================================
+! VLAN DATABASE
+! ============================================================
+vlan 10
+name ADMIN
+exit
+
+vlan 20
+name STAFF
+exit
+
+vlan 30
+name GUEST
+exit
+
+vlan 40
+name SERVER
+exit
+
+!
+! ============================================================
+! VLAN 10 - ADMIN
+! ============================================================
+interface FastEthernet0/1
+description ADMIN-PC1
+switchport mode access
+switchport access vlan 10
+exit
+
+interface FastEthernet0/2
+description ADMIN-PC2
+switchport mode access
+switchport access vlan 10
+exit
+
+!
+! ============================================================
+! VLAN 20 - STAFF
+! ============================================================
+interface FastEthernet0/3
+description STAFF-PC1
+switchport mode access
+switchport access vlan 20
+exit
+
+interface FastEthernet0/4
+description STAFF-PC2
+switchport mode access
+switchport access vlan 20
+exit
+
+!
+! ============================================================
+! VLAN 40 - SERVER
+! ============================================================
+interface FastEthernet0/5
+description SRV1
+switchport mode access
+switchport access vlan 40
+exit
+
+!
+! ============================================================
+! TRUNK TO SW2
+! ============================================================
+interface FastEthernet0/23
+description TRUNK_TO_SW2
+switchport mode trunk
+switchport trunk allowed vlan 20,30
+exit
+
+!
+! ============================================================
+! TRUNK TO R1
+! ============================================================
+interface FastEthernet0/24
+description TRUNK_TO_R1
+switchport mode trunk
+switchport trunk allowed vlan 10,20,30,40
+exit
+
+!
+! ============================================================
+! END
+! ============================================================
